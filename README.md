@@ -1,4 +1,4 @@
-# Postman + newman + github actions (Simple store template)
+# Postman + github actions (Simple store template)
 
 <a href="https://drive.google.com/file/d/1LQ1uG7Tt70Jubuk5loS4dMSk-1AJ5jzz/view?usp=sharing" /> Intro </a>
 
