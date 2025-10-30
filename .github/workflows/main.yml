@@ -34,8 +34,8 @@ jobs:
         run: |
           newman run store.collection.json \
             -r htmlextra \
-            --reporter-htmlextra-export testResults/htmlreport.html \
-            > testResults/runreport1.html
+            --reporter-htmlextra-export testResults/htmlreport.html
+        
             
       - name: Output the run Details
         uses: actions/upload-artifact@v4
