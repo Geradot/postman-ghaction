@@ -3388,7 +3388,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "/api/v3"
+			"value": "https://petstore3.swagger.io/api/v3"
 		}
 	]
 }
