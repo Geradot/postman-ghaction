@@ -1,0 +1,1066 @@
+{
+	"info": {
+		"_postman_id": "bbabc028-747c-44d1-958a-d69ec94ebda8",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16180937"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"type\":\"array\",\"description\":\"\",\"minItems\":1,\"items\":{\"type\":\"object\",\"required\":[\"id\",\"name\",\"price\",\"sku\",\"description\"],\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\",\"minLength\":1},\"price\":{\"type\":\"number\"},\"sku\":{\"type\":\"number\"},\"description\":{\"type\":\"string\",\"minLength\":1}}}}\r",
+									"\r",
+									"pm.test(\"Response matches the schema of List products\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\",\"minLength\":1},\"price\":{\"type\":\"number\"},\"sku\":{\"type\":\"number\"},\"description\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"id\",\"name\",\"price\",\"sku\",\"description\"]}\r",
+									"\r",
+									"pm.test(\"Response matches the schema of a product\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create product",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let body;\r",
+									"try {\r",
+									"    body = JSON.parse(pm.request.body.raw);\r",
+									"} catch (e) {\r",
+									"    throw new Error(\"Invalid JSON in request body — request will not be sent\");\r",
+									"}\r",
+									"\r",
+									"const errors = [];\r",
+									"\r",
+									"// Check 'name' field\r",
+									"if (!body.name || typeof body.name !== \"string\" || body.name.trim() === \"\") {\r",
+									"    errors.push(\"• 'name' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Check 'price' field\r",
+									"if (typeof body.price !== \"number\" || body.price <= 0) {\r",
+									"    errors.push(\"• 'price' must be a number greater than 0\");\r",
+									"}\r",
+									"\r",
+									"// Check 'sku' field\r",
+									"if (typeof body.sku !== \"number\" || body.sku <= 0) {\r",
+									"    errors.push(\"• 'sku' must be a number greater than 0\");\r",
+									"}\r",
+									"\r",
+									"// Check 'description' field\r",
+									"if (!body.description || typeof body.description !== \"string\" || body.description.trim() === \"\") {\r",
+									"    errors.push(\"• 'description' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Throw error if any validation failed\r",
+									"if (errors.length > 0) {\r",
+									"    throw new Error(\"Request body validation failed:\\n\" + errors.join(\"\\n\"));\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"price\":{\"type\":\"number\"},\"sku\":{\"type\":\"number\"},\"description\":{\"type\":\"string\",\"minLength\":1},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"price\",\"sku\",\"description\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"qtav123\",\r\n    \"price\": 12,\r\n    \"sku\": 123123,\r\n    \"description\": \"123asdfqwer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let body;\r",
+									"try {\r",
+									"    body = JSON.parse(pm.request.body.raw);\r",
+									"} catch (e) {\r",
+									"    throw new Error(\"Invalid JSON in request body — request will not be sent\");\r",
+									"}\r",
+									"\r",
+									"// Extended schema checks\r",
+									"const errors = [];\r",
+									"\r",
+									"// Check 'id' field\r",
+									"if (!body.id || typeof body.id !== \"number\") {\r",
+									"    errors.push(\"• 'id' must exists and be a number\");\r",
+									"}\r",
+									"// Check 'name' field\r",
+									"if (!body.name || typeof body.name !== \"string\" || body.name.trim() === \"\") {\r",
+									"    errors.push(\"• 'name' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Check 'price' field\r",
+									"if (typeof body.price !== \"number\" || body.price <= 0) {\r",
+									"    errors.push(\"• 'price' must be a number greater than 0\");\r",
+									"}\r",
+									"\r",
+									"// Check 'sku' field\r",
+									"if (typeof body.sku !== \"number\" || body.sku <= 0) {\r",
+									"    errors.push(\"• 'sku' must be a number greater than 0\");\r",
+									"}\r",
+									"\r",
+									"// Check 'description' field\r",
+									"if (!body.description || typeof body.description !== \"string\" || body.description.trim() === \"\") {\r",
+									"    errors.push(\"• 'description' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Throw error if any validation failed\r",
+									"if (errors.length > 0) {\r",
+									"    throw new Error(\"Request body validation failed:\\n\" + errors.join(\"\\n\"));\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"price\":{\"type\":\"number\"},\"sku\":{\"type\":\"number\"},\"description\":{\"type\":\"string\",\"minLength\":1},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"price\",\"sku\",\"description\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"BOBO\",\r\n    \"price\": 255,\r\n    \"sku\": 123123,\r\n    \"description\": \"changed description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product by ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"price\":{\"type\":\"number\"},\"sku\":{\"type\":\"number\"},\"description\":{\"type\":\"string\",\"minLength\":1},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"price\",\"sku\",\"description\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"type\":\"array\",\"description\":\"\",\"minItems\":1,\"items\":{\"type\":\"object\",\"required\":[\"id\",\"name\",\"sku\"],\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\",\"minLength\":1},\"sku\":{\"type\":\"number\"}}}}\r",
+									"\r",
+									"pm.test(\"Response matches the schema of List orders\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\",\"minLength\":1},\"sku\":{\"type\":\"number\"}},\"required\":[\"id\",\"name\",\"sku\"]}\r",
+									"\r",
+									"pm.test(\"Response matches the schema of an order\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let body;\r",
+									"try {\r",
+									"    body = JSON.parse(pm.request.body.raw);\r",
+									"} catch (e) {\r",
+									"    throw new Error(\"Invalid JSON in request body — request will not be sent\");\r",
+									"}\r",
+									"\r",
+									"const errors = [];\r",
+									"\r",
+									"// Check 'name' field\r",
+									"if (!body.name || typeof body.name !== \"string\" || body.name.trim() === \"\") {\r",
+									"    errors.push(\"• 'name' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Check 'sku' field\r",
+									"if (typeof body.sku !== \"number\" || body.sku <= 0) {\r",
+									"    errors.push(\"• 'sku' must be a number greater than 0\");\r",
+									"}\r",
+									"\r",
+									"// Throw error if any validation failed\r",
+									"if (errors.length > 0) {\r",
+									"    throw new Error(\"Request body validation failed:\\n\" + errors.join(\"\\n\"));\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"sku\":{\"type\":\"number\"},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"sku\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"order1012\",\r\n    \"sku\": 31231\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let body;\r",
+									"try {\r",
+									"    body = JSON.parse(pm.request.body.raw);\r",
+									"} catch (e) {\r",
+									"    throw new Error(\"Invalid JSON in request body — request will not be sent\");\r",
+									"}\r",
+									"\r",
+									"const errors = [];\r",
+									"\r",
+									"// Check 'id' field\r",
+									"if (!body.id || typeof body.id !== \"number\") {\r",
+									"    errors.push(\"• 'id' must exists and be a number\");\r",
+									"}\r",
+									"\r",
+									"// Check 'name' field\r",
+									"if (!body.name || typeof body.name !== \"string\" || body.name.trim() === \"\") {\r",
+									"    errors.push(\"• 'name' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Check 'sku' field\r",
+									"if (typeof body.sku !== \"number\" || body.sku <= 0) {\r",
+									"    errors.push(\"• 'sku' must be a number greater than 0\");\r",
+									"}\r",
+									"\r",
+									"// Throw error if any validation failed\r",
+									"if (errors.length > 0) {\r",
+									"    throw new Error(\"Request body validation failed:\\n\" + errors.join(\"\\n\"));\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"sku\":{\"type\":\"number\"},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"sku\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"neworder\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"minLength\":1},\"sku\":{\"type\":\"number\"},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"sku\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "15"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"type\":\"array\",\"description\":\"\",\"minItems\":1,\"uniqueItems\":true,\"items\":{\"type\":\"object\",\"required\":[\"id\",\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"],\"properties\":{\"id\":{\"type\":\"number\"},\"firstName\":{\"type\":\"string\",\"minLength\":1},\"lastName\":{\"type\":\"string\",\"minLength\":1},\"email\":{\"type\":\"string\",\"minLength\":1},\"dateOfBirth\":{\"type\":\"string\",\"minLength\":1},\"emailVerified\":{\"type\":\"boolean\"},\"signUpDate\":{\"type\":\"string\",\"minLength\":1},\"status\":{\"type\":\"string\",\"minLength\":1},\"level\":{\"type\":\"string\",\"minLength\":1}}}}\r",
+									"\r",
+									"pm.test(\"Response matches the schema of List users\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"firstName\":{\"type\":\"string\",\"minLength\":1},\"lastName\":{\"type\":\"string\",\"minLength\":1},\"email\":{\"type\":\"string\",\"minLength\":1},\"dateOfBirth\":{\"type\":\"string\",\"minLength\":1},\"emailVerified\":{\"type\":\"boolean\"},\"signUpDate\":{\"type\":\"string\",\"minLength\":1},\"status\":{\"type\":\"string\",\"minLength\":1},\"level\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"id\",\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]}\r",
+									"\r",
+									"pm.test(\"Response matches the schema of a User object\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"firstName\":{\"type\":\"string\",\"minLength\":1},\"lastName\":{\"type\":\"string\",\"minLength\":1},\"email\":{\"type\":\"string\",\"minLength\":1},\"dateOfBirth\":{\"type\":\"string\",\"minLength\":1},\"emailVerified\":{\"type\":\"boolean\"},\"signUpDate\":{\"type\":\"string\",\"minLength\":1},\"status\":{\"type\":\"string\",\"minLength\":1},\"level\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// let body;\r",
+									"// try {\r",
+									"//     body = JSON.parse(pm.request.body.raw);\r",
+									"// } catch (e) {\r",
+									"//     throw new Error(\"Invalid JSON in request body — request will not be sent\");\r",
+									"// }\r",
+									"\r",
+									"// const errors = [];\r",
+									"\r",
+									"// // Check 'firstNames'\r",
+									"// if (!body.firstNames || typeof body.firstNames !== \"string\" || body.firstNames.trim() === \"\") {\r",
+									"//     errors.push(\"• 'firstNames' must be a non-empty string\");\r",
+									"// }\r",
+									"\r",
+									"// // Check 'lastName'\r",
+									"// if (!body.lastName || typeof body.lastName !== \"string\" || body.lastName.trim() === \"\") {\r",
+									"//     errors.push(\"• 'lastName' must be a non-empty string\");\r",
+									"// }\r",
+									"\r",
+									"// // Check 'email'\r",
+									"// if (!body.email || typeof body.email !== \"string\" || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(body.email)) {\r",
+									"//     errors.push(\"• 'email' must be a valid email address\");\r",
+									"// }\r",
+									"\r",
+									"// // Check 'dateOfBirth'\r",
+									"// if (!body.dateOfBirth || typeof body.dateOfBirth !== \"string\" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(body.dateOfBirth)) {\r",
+									"//     errors.push(\"• 'dateOfBirth' must be a valid date in format YYYY-MM-DD\");\r",
+									"// }\r",
+									"\r",
+									"// // Check 'emailVerified'\r",
+									"// if (typeof body.emailVerified !== \"boolean\") {\r",
+									"//     errors.push(\"• 'emailVerified' must be a boolean (true/false)\");\r",
+									"// }\r",
+									"\r",
+									"// // Check 'signUpDate'\r",
+									"// if (!body.signUpDate || typeof body.signUpDate !== \"string\" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(body.signUpDate)) {\r",
+									"//     errors.push(\"• 'signUpDate' must be a valid date in format YYYY-MM-DD\");\r",
+									"// }\r",
+									"\r",
+									"// // Check 'status'\r",
+									"// const allowedStatuses = [\"active\", \"inactive\", \"banned\"];\r",
+									"// if (!body.status || typeof body.status !== \"string\" || !allowedStatuses.includes(body.status)) {\r",
+									"//     errors.push(`• 'status' must be one of: ${allowedStatuses.join(\", \")}`);\r",
+									"// }\r",
+									"\r",
+									"// // Check 'level'\r",
+									"// const allowedLevels = [\"user\", \"admin\", \"lord\"];\r",
+									"// if (!body.level || typeof body.level !== \"string\" || !allowedLevels.includes(body.level)) {\r",
+									"//     errors.push(`• 'level' must be one of: ${allowedLevels.join(\", \")}`);\r",
+									"// }\r",
+									"\r",
+									"// // Throw error if validation failed\r",
+									"// if (errors.length > 0) {\r",
+									"//     throw new Error(\"Request body validation failed:\\n\" + errors.join(\"\\n\"));\r",
+									"// }\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Dream\",\r\n    \"lastName\": \"Real\",\r\n    \"email\": \"dream.real@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let body;\r",
+									"try {\r",
+									"    body = JSON.parse(pm.request.body.raw);\r",
+									"} catch (e) {\r",
+									"    throw new Error(\"Invalid JSON in request body — request will not be sent\");\r",
+									"}\r",
+									"\r",
+									"const errors = [];\r",
+									"\r",
+									"// Check 'id'\r",
+									"if (!body.id || typeof body.id !== \"number\" || body.id <= 0) {\r",
+									"    errors.push(\"• 'id' must be a positive number\");\r",
+									"}\r",
+									"// Check 'firstName'\r",
+									"if (!body.firstName || typeof body.firstName !== \"string\" || body.firstName.trim() === \"\") {\r",
+									"    errors.push(\"• 'firstName' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Check 'lastName'\r",
+									"if (!body.lastName || typeof body.lastName !== \"string\" || body.lastName.trim() === \"\") {\r",
+									"    errors.push(\"• 'lastName' must be a non-empty string\");\r",
+									"}\r",
+									"\r",
+									"// Check 'email'\r",
+									"if (!body.email || typeof body.email !== \"string\" || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(body.email)) {\r",
+									"    errors.push(\"• 'email' must be a valid email address\");\r",
+									"}\r",
+									"\r",
+									"// Check 'dateOfBirth'\r",
+									"if (!body.dateOfBirth || typeof body.dateOfBirth !== \"string\" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(body.dateOfBirth)) {\r",
+									"    errors.push(\"• 'dateOfBirth' must be a valid date in format YYYY-MM-DD\");\r",
+									"}\r",
+									"\r",
+									"// Check 'emailVerified'\r",
+									"if (typeof body.emailVerified !== \"boolean\") {\r",
+									"    errors.push(\"• 'emailVerified' must be a boolean (true/false)\");\r",
+									"}\r",
+									"\r",
+									"// Check 'signUpDate'\r",
+									"if (!body.signUpDate || typeof body.signUpDate !== \"string\" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(body.signUpDate)) {\r",
+									"    errors.push(\"• 'signUpDate' must be a valid date in format YYYY-MM-DD\");\r",
+									"}\r",
+									"\r",
+									"// Check 'status'\r",
+									"const allowedStatuses = [\"active\", \"inactive\", \"banned\"];\r",
+									"if (!body.status || typeof body.status !== \"string\" || !allowedStatuses.includes(body.status)) {\r",
+									"    errors.push(`• 'status' must be one of: ${allowedStatuses.join(\", \")}`);\r",
+									"}\r",
+									"\r",
+									"// Check 'level'\r",
+									"const allowedLevels = [\"user\", \"admin\", \"lord\"];\r",
+									"if (!body.level || typeof body.level !== \"string\" || !allowedLevels.includes(body.level)) {\r",
+									"    errors.push(`• 'level' must be one of: ${allowedLevels.join(\", \")}`);\r",
+									"}\r",
+									"\r",
+									"// Throw error if validation failed\r",
+									"if (errors.length > 0) {\r",
+									"    throw new Error(\"Request body validation failed:\\n\" + errors.join(\"\\n\"));\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"firstName\":{\"type\":\"string\",\"minLength\":1},\"lastName\":{\"type\":\"string\",\"minLength\":1},\"email\":{\"type\":\"string\",\"minLength\":1},\"dateOfBirth\":{\"type\":\"string\",\"minLength\":1},\"emailVerified\":{\"type\":\"boolean\"},\"signUpDate\":{\"type\":\"string\",\"minLength\":1},\"status\":{\"type\":\"string\",\"minLength\":1},\"level\":{\"type\":\"string\",\"minLength\":1},\"id\":{\"type\":\"number\"}},\"required\":[\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Garka\",\r\n    \"lastName\": \"Ewaka\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const schema = {\"description\":\"\",\"type\":\"object\",\"properties\":{\"firstName\":{\"type\":\"string\",\"minLength\":1},\"lastName\":{\"type\":\"string\",\"minLength\":1},\"email\":{\"type\":\"string\",\"minLength\":1},\"dateOfBirth\":{\"type\":\"string\",\"minLength\":1},\"emailVerified\":{\"type\":\"boolean\"},\"signUpDate\":{\"type\":\"string\",\"minLength\":1},\"status\":{\"type\":\"string\",\"minLength\":1},\"level\":{\"type\":\"string\",\"minLength\":1},\"id\":{\"type\":\"number\"}},\"required\":[\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\",\"id\"]}\r",
+									"\r",
+									"pm.test(\"Response body matches the schema\", () => {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					"pm.test(\"Response time is less than 300ms\", function () {\r",
+					"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+					"});\r",
+					"\r",
+					"pm.test(\"Content-Type is present\", function () {\r",
+					"    pm.response.to.have.header(\"Content-Type\");\r",
+					"});\r",
+					"\r",
+					"pm.test(\"Content-Type is application/json\", function () {\r",
+					"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.contain(\"application/json\" || \"text/html\");\r",
+					"})"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}
